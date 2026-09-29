@@ -1,5 +1,5 @@
 name: task-ai-desktop
-version: 0.1.0
+version: 0.2.0
 target:
   os: ubuntu
   release: "26.04"
@@ -10,16 +10,26 @@ repositories:
   xlaunch: git@github.com:ai-workspace-lab/XLaunch.git
 profiles:
   desktop:
+    package: task-ai-desktop
     display_server: existing-xorg
     remote_access: optional
   vps:
+    package: task-ai-desktop-vps
     display_server: xvfb
-    remote_access: [x11vnc, novnc, websockify]
+    remote_access: [x11vnc, novnc, websockify, xrdp, xpra]
   container:
+    package: task-ai-desktop-container
     display_server: xvfb
     remote_access: [x11vnc, novnc, websockify]
     init: tini
     service_manager: dbus-run-session
+packages:
+  core: task-ai-desktop-core
+  session: task-ai-desktop-session
+  xdock: task-ai-desktop-xdock
+  xlaunch: task-ai-desktop-xlaunch
+  apps: task-ai-desktop-apps
+  development: task-ai-desktop-dev
 future:
   wayland:
     display_server: weston-or-wlroots-headless

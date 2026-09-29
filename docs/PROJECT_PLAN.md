@@ -27,6 +27,31 @@ Xvfb → ICEWM → XDock/XLaunch → X11VNC → 可选 noVNC/websockify
 当前版本不引入 TigerVNC。`DISPLAY_BACKEND=xvfb` 是当前唯一实现；
 Wayland 仅保留后端接口和设计位置。
 
+包拆分、运行配置和 OCI 镜像的详细契约见
+[`docs/PACKAGE_ARCHITECTURE.md`](PACKAGE_ARCHITECTURE.md)。
+
+## 包结构与运行边界
+
+```text
+task-ai-desktop
+├── task-ai-desktop-core
+├── task-ai-desktop-session
+├── task-ai-desktop-xdock
+├── task-ai-desktop-xlaunch
+├── task-ai-desktop-apps
+├── task-ai-desktop-vps
+├── task-ai-desktop-container
+└── task-ai-desktop-dev
+```
+
+`task-ai-desktop` 是完整桌面元包；core、session、组件和 apps 可以单独
+安装。VPS profile 默认走 `Xvfb + X11VNC`，同时推荐 Xorg、XRDP、xpra、
+noVNC 和 websockify 作为可选传输。容器 profile 使用 `tini + Xvfb +
+dbus-run-session + ICEWM`，OCI 定义位于 `containers/debian/Containerfile`。
+
+开发工具链不进入运行时核心包，使用 `task-ai-desktop-dev` 作为建议入口，
+实际版本继续由 Home-Ubuntu 基线清单控制。
+
 ## V1 交付范围
 
 - [ ] 在 Debian 13 构建机上安装 `live-build`、`debootstrap`、`xorriso`、
@@ -36,7 +61,10 @@ Wayland 仅保留后端接口和设计位置。
 - [ ] 构建 XLaunch 的 Linux/X11 `.deb`，验证 freedesktop 应用发现、
       `gio` 启动、Menu/全屏切换和图标主题读取。
 - [ ] 构建 `task-ai-desktop` 元包及两个 profile：
-      `task-ai-desktop-vps`、`task-ai-desktop-container`。
+      `task-ai-desktop-vps`、`task-ai-desktop-container`，并拆分 core、
+      session、XDock、XLaunch、apps 子包。
+- [ ] 构建 Debian 13 OCI 镜像，验证 `/usr/bin/tini`、Xvfb、ICEWM、XDock、
+      XLaunch 和 healthcheck，不依赖 systemd。
 - [ ] 将三个组件包复制到 isobuilder 的 `config/packages.chroot`，
       通过 `live-build` 生成可启动 ISO。
 - [ ] ISO 默认安装 ICEWM、X11、字体、终端、文件浏览器、浏览器、Xvfb、
@@ -71,7 +99,9 @@ Wayland 仅保留后端接口和设计位置。
    ```
 
 2. 编译并生成 XDock、XLaunch、ai-desktop `.deb`。包名契约为：
-   `xdock`、`xlaunch`、`task-ai-desktop`、`task-ai-desktop-vps`、
+   `xdock`、`xlaunch`、`task-ai-desktop-core`、`task-ai-desktop-session`、
+   `task-ai-desktop-xdock`、`task-ai-desktop-xlaunch`,
+   `task-ai-desktop-apps`、`task-ai-desktop`、`task-ai-desktop-vps` 和
    `task-ai-desktop-container`。
 
 3. 使用 isobuilder 的 ISO profile：
@@ -86,6 +116,14 @@ Wayland 仅保留后端接口和设计位置。
 
    ```sh
    ENABLE_NOVNC=1 /usr/lib/task-ai-desktop/start-headless-session.sh
+   ```
+
+5. 构建并运行 OCI 镜像：
+
+   ```sh
+   podman build -f containers/debian/Containerfile -t task-ai-desktop:debian13 .
+   podman run --rm --shm-size=2g -e ENABLE_NOVNC=1 \
+     -p 8080:8080 -p 5900:5900 task-ai-desktop:debian13
    ```
 
 ## 版本基线
@@ -120,6 +158,8 @@ Home-Ubuntu 对齐的工具版本清单：
   `ENABLE_NOVNC=1` 时浏览器可访问 8080。
 - CJK 文本正常显示；Chromium 容器的 `/dev/shm` 至少 2 GiB。
 - 同一套包和脚本可在 Home-Ubuntu 本地 X11 会话复用。
+- Debian OCI 镜像的 healthcheck 能检测 X display、ICEWM、XDock 和 XLaunch。
+- `/opt/task-ai-desktop/bin/xdock`、`xlaunch` 和 `XLaunch` 兼容别名可用。
 
 ## V1 之外
 

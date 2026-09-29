@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-XDOCK_BIN="${XDOCK_BIN:-/opt/task-ai-desktop/bin/xdock}"
-XLAUNCH_BIN="${XLAUNCH_BIN:-/opt/task-ai-desktop/bin/xlaunch}"
+XDOCK_BIN="${XDOCK_BIN:-/usr/bin/xdock}"
+XLAUNCH_BIN="${XLAUNCH_BIN:-/usr/bin/xlaunch}"
+[[ -x "${XDOCK_BIN}" ]] || XDOCK_BIN=/opt/task-ai-desktop/bin/xdock
+if [[ ! -x "${XLAUNCH_BIN}" ]]; then
+    XLAUNCH_BIN=/opt/task-ai-desktop/bin/xlaunch
+fi
 STATE_DIR="${XDG_STATE_HOME:-${HOME}/.local/state}/task-ai-desktop"
 mkdir -p "${STATE_DIR}"
 

@@ -1,8 +1,9 @@
 # task-ai-desktop
 
-`task-ai-desktop` is a small X11 desktop bundle for AI Workspace. It keeps
-ICEWM as the window manager and combines XDock, XLaunch, a terminal, a file
-manager and a web browser into one installable Debian/Ubuntu meta-package.
+`task-ai-desktop` is a Debian/Ubuntu meta-package family for AI Workspace. It
+keeps ICEWM as the X11 window manager and combines XDock, XLaunch, a terminal,
+a file manager and a web browser. The same session contract is used on desktop
+computers, VPS hosts and OCI containers.
 
 The default shell is deliberately small:
 
@@ -22,6 +23,11 @@ ICEWM session
 | `task-ai-desktop` | desktop computer | existing Xorg/display manager |
 | `task-ai-desktop-vps` | Debian 13 VPS | Xvfb + X11VNC + ICEWM |
 | `task-ai-desktop-container` | OCI/container | Xvfb + X11VNC + optional noVNC |
+
+The runtime is split into `task-ai-desktop-core`, `task-ai-desktop-session`,
+`task-ai-desktop-xdock`, `task-ai-desktop-xlaunch` and
+`task-ai-desktop-apps`. `task-ai-desktop` is the complete desktop meta-package;
+`task-ai-desktop-dev` keeps the development toolchain separate.
 
 The package does not force a display manager. On a desktop, select ICEWM in
 the existing display manager. On a Debian 13 VPS, the VPS profile uses
@@ -49,6 +55,9 @@ DISPLAY_NUMBER=99 SCREEN=1920x1080x24 ENABLE_NOVNC=1 \
 
 Xvfb supplies the virtual X11 display and X11VNC exports it without requiring
 Xorg, a physical display, or GPU memory.
+
+The Debian package layout also provides `/opt/task-ai-desktop/bin/xdock`,
+`xlaunch` and the compatibility alias `XLaunch` for existing ICEWM menu files.
 
 Xvfb is the current headless display backend. It is a good fit for VPS and
 containers because it has no GPU or compositor requirement, but it is a CPU
@@ -124,3 +133,6 @@ systemd for the native desktop shell itself.
 
 The staged ISO integration plan, package contract, acceptance checks and future
 Wayland reservation are documented in [`docs/PROJECT_PLAN.md`](docs/PROJECT_PLAN.md).
+The package split and OCI image contract are in
+[`docs/PACKAGE_ARCHITECTURE.md`](docs/PACKAGE_ARCHITECTURE.md) and
+[`containers/debian/README.md`](containers/debian/README.md).

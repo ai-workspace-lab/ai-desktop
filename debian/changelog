@@ -1,3 +1,12 @@
+task-ai-desktop (0.2.0-1) unstable; urgency=medium
+
+  * Split the runtime into core, session, component, app and profile packages.
+  * Add the Debian 13 OCI Containerfile and healthcheck contract.
+  * Keep Xvfb as the no-GPU headless backend and reserve Wayland for a future
+    profile.
+
+ -- AI Workspace Lab <ai-workspace-lab@users.noreply.github.com>  Wed, 30 Sep 2026 00:00:00 +0800
+
 task-ai-desktop (0.1.0-1) unstable; urgency=medium
 
   * Add ICEWM/X11 desktop meta-package and desktop, VPS, and container profiles.

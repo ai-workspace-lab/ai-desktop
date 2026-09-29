@@ -1,0 +1,27 @@
+FROM debian:13-slim
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+ENV DISPLAY=:99 \
+    DISPLAY_NUMBER=99 \
+    QT_QPA_PLATFORM=xcb \
+    XDG_CURRENT_DESKTOP=ICEWM \
+    ENABLE_VNC=1 \
+    ENABLE_NOVNC=0
+
+COPY debs/ /tmp/task-ai-desktop-debs/
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        /tmp/task-ai-desktop-debs/*.deb \
+        novnc websockify \
+    && rm -rf /var/lib/apt/lists/* /tmp/task-ai-desktop-debs
+
+COPY containers/debian/entrypoint.sh /usr/local/bin/task-ai-desktop-container
+RUN chmod 0755 /usr/local/bin/task-ai-desktop-container
+
+EXPOSE 5900 8080
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s \
+    CMD /usr/lib/task-ai-desktop/healthcheck.sh
+
+ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/task-ai-desktop-container"]

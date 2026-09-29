@@ -7,10 +7,9 @@ Standards-Version: 4.7.0
 Rules-Requires-Root: no
 Homepage: https://github.com/ai-workspace-lab/ai-desktop
 
-Package: task-ai-desktop
+Package: task-ai-desktop-core
 Architecture: all
 Depends:
- icewm,
  dbus-x11,
  xdg-utils,
  xdg-user-dirs,
@@ -26,10 +25,7 @@ Depends:
  adwaita-icon-theme,
  gvfs,
  gvfs-backends,
- xfce4-terminal,
- thunar,
- thunar-volman,
- libqt6core6,
+ libqt6core6t64,
  libqt6gui6,
  libqt6qml6,
  libqt6quick6,
@@ -37,30 +33,83 @@ Depends:
  libqt6widgets6,
  qt6-qpa-plugins,
  libxcb1,
- xdock,
- xlaunch,
+ libx11-xcb1,
+ ${misc:Depends}
+Description: core runtime for the task-ai-desktop environment
+ Provides the shared X11, D-Bus, XDG, font, icon, GVFS and Qt runtime needed
+ by the task-ai-desktop session and its native components.
+
+Package: task-ai-desktop-session
+Architecture: all
+Depends: task-ai-desktop-core, icewm, dbus-x11, ${misc:Depends}
+Recommends: xorg
+Description: ICEWM session integration for task-ai-desktop
+ Starts the ICEWM session shell, installs user startup/menu helpers and
+ provides the shared Xvfb headless-session entrypoint.
+
+Package: task-ai-desktop-xdock
+Architecture: all
+Depends: task-ai-desktop-session, xdock, ${misc:Depends}
+Description: XDock integration for task-ai-desktop
+ Installs the XDock EWMH dock component and its task-ai-desktop path alias.
+
+Package: task-ai-desktop-xlaunch
+Architecture: all
+Depends: task-ai-desktop-session, xlaunch, ${misc:Depends}
+Description: XLaunch integration for task-ai-desktop
+ Installs the XLaunch Menu and full-screen application launcher and its
+ task-ai-desktop path aliases.
+
+Package: task-ai-desktop-apps
+Architecture: all
+Depends:
+ task-ai-desktop-session,
+ xfce4-terminal,
+ thunar,
+ thunar-volman,
  chromium | firefox-esr,
  ${misc:Depends}
+Description: desktop applications for task-ai-desktop
+ Provides the recommended terminal, file manager and web browser while
+ keeping application choices separate from the core desktop session.
+
+Package: task-ai-desktop
+Architecture: all
+Depends:
+ task-ai-desktop-core,
+ task-ai-desktop-session,
+ task-ai-desktop-xdock,
+ task-ai-desktop-xlaunch,
+ task-ai-desktop-apps,
+ ${misc:Depends}
 Recommends: xorg, lightdm
-Description: lightweight AI Workspace X11 desktop task
- Meta-package for an ICEWM-based AI desktop with XDock, XLaunch, a terminal,
- Thunar, and Chromium or Firefox. It supports desktop, VPS, and container
- profiles through the companion task-ai-desktop-vps and
- task-ai-desktop-container packages.
+Description: lightweight AI Workspace X11 desktop meta-package
+ Installs the complete ICEWM desktop combination: XDock, XLaunch,
+ xfce4-terminal, Thunar, Chromium or Firefox, fonts, icons, GVFS, D-Bus and
+ the Qt/X11 runtime. It does not select a display manager.
 
 Package: task-ai-desktop-vps
 Architecture: all
 Depends: task-ai-desktop, xvfb, x11vnc, dbus-x11, ${misc:Depends}
-Recommends: novnc, websockify
+Recommends: xorg, xrdp, xpra, novnc, websockify
 Description: VPS profile for task-ai-desktop
- Adds the Xvfb and X11VNC pieces needed to run the ICEWM AI desktop on a
- headless VPS without a physical display or GPU.
+ Adds the Xvfb and X11VNC path for a headless VPS without a physical display
+ or GPU. Xorg with XRDP or xpra remains available as an optional transport.
 
 Package: task-ai-desktop-container
 Architecture: all
 Depends: task-ai-desktop, xvfb, x11vnc, dbus-x11, tini, ${misc:Depends}
 Recommends: novnc, websockify
-Description: container profile for task-ai-desktop
- Adds Xvfb, X11VNC, D-Bus and init setup for running the AI desktop inside an
- OCI container without systemd; noVNC and websockify provide optional browser
- access.
+Description: OCI container profile for task-ai-desktop
+ Adds Xvfb, X11VNC, D-Bus and init integration for an OCI container without
+ systemd, LightDM or a physical display. noVNC and websockify are optional.
+
+Package: task-ai-desktop-dev
+Architecture: all
+Depends: task-ai-desktop, ${misc:Depends}
+Suggests: git, gh, python3, golang, nodejs, npm, jq
+Description: development-tool recommendation for task-ai-desktop
+ Keeps the development toolchain separate from the runtime desktop. Install
+ the Home-Ubuntu version matrix explicitly when a build or development host
+ needs Git, GitHub CLI, Terraform, Ansible, Python, Go, Node.js, pnpm, jq or
+ Google Cloud CLI.

@@ -1,7 +1,8 @@
 # task-ai-desktop
 
-`task-ai-desktop` 是面向 AI Workspace 的轻量 X11 桌面包。它保留 ICEWM
-作为窗口管理器，并组合 XDock、XLaunch、终端、文件浏览器和 Web 浏览器。
+`task-ai-desktop` 是面向 AI Workspace 的 Debian/Ubuntu 元包系列。它保留
+ICEWM 作为 X11 窗口管理器，并组合 XDock、XLaunch、终端、文件浏览器和
+Web 浏览器；桌面电脑、VPS 和 OCI 容器使用统一的会话契约。
 
 ```text
 ICEWM 会话
@@ -36,6 +37,10 @@ Weston/wlroots + Xwayland 的软件渲染 Wayland 后端预留位置；ICEWM、X
 
 第一版本以 Debian + ai-desktop 定制 ISO 为主线，仓库职责、PR 顺序、构建
 命令和验收标准见 [`docs/PROJECT_PLAN.md`](docs/PROJECT_PLAN.md)。
+
+包层级拆分、`/opt/task-ai-desktop` 目录契约和 Debian OCI 镜像见
+[`docs/PACKAGE_ARCHITECTURE.md`](docs/PACKAGE_ARCHITECTURE.md) 与
+[`containers/debian/README.md`](containers/debian/README.md)。
 
 XLaunch 默认进入简约 Menu。Enter、F11 或“全部应用”进入全屏 APP Launch；
 Menu 或 Esc 返回简约模式。
