@@ -13,12 +13,18 @@ profiles:
     display_server: existing-xorg
     remote_access: optional
   vps:
-    display_server: xorg
-    remote_access: [xrdp, xpra]
+    display_server: xvfb
+    remote_access: [x11vnc, novnc, websockify]
   container:
     display_server: xvfb
+    remote_access: [x11vnc, novnc, websockify]
     init: tini
     service_manager: dbus-run-session
+future:
+  wayland:
+    display_server: weston-or-wlroots-headless
+    rendering: software
+    x11_compatibility: xwayland
 components:
   window_manager: icewm
   dock: xdock
