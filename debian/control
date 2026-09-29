@@ -1,0 +1,66 @@
+Source: task-ai-desktop
+Section: tasks
+Priority: optional
+Maintainer: AI Workspace Lab <ai-workspace-lab@users.noreply.github.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+Homepage: https://github.com/ai-workspace-lab/ai-desktop
+
+Package: task-ai-desktop
+Architecture: all
+Depends:
+ icewm,
+ dbus-x11,
+ xdg-utils,
+ xdg-user-dirs,
+ x11-utils,
+ x11-xserver-utils,
+ xauth,
+ ca-certificates,
+ fontconfig,
+ fonts-noto-core,
+ fonts-noto-cjk,
+ fonts-noto-color-emoji,
+ hicolor-icon-theme,
+ adwaita-icon-theme,
+ gvfs,
+ gvfs-backends,
+ xfce4-terminal,
+ thunar,
+ thunar-volman,
+ libqt6core6,
+ libqt6gui6,
+ libqt6qml6,
+ libqt6quick6,
+ libqt6quickcontrols2-6,
+ libqt6widgets6,
+ qt6-qpa-plugins,
+ libxcb1,
+ xdock,
+ xlaunch,
+ chromium | firefox-esr,
+ ${misc:Depends}
+Recommends: xorg, lightdm
+Description: lightweight AI Workspace X11 desktop task
+ Meta-package for an ICEWM-based AI desktop with XDock, XLaunch, a terminal,
+ Thunar, and Chromium or Firefox. It supports desktop, VPS, and container
+ profiles through the companion task-ai-desktop-vps and
+ task-ai-desktop-container packages.
+
+Package: task-ai-desktop-vps
+Architecture: all
+Depends: task-ai-desktop, xvfb, x11vnc, dbus-x11, ${misc:Depends}
+Recommends: novnc, websockify
+Description: VPS profile for task-ai-desktop
+ Adds the Xvfb and X11VNC pieces needed to run the ICEWM AI desktop on a
+ headless VPS without a physical display or GPU.
+
+Package: task-ai-desktop-container
+Architecture: all
+Depends: task-ai-desktop, xvfb, x11vnc, dbus-x11, tini, ${misc:Depends}
+Recommends: novnc, websockify
+Description: container profile for task-ai-desktop
+ Adds Xvfb, X11VNC, D-Bus and init setup for running the AI desktop inside an
+ OCI container without systemd; noVNC and websockify provide optional browser
+ access.
