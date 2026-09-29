@@ -121,3 +121,6 @@ produced by their source repositories.
 The intended target is Ubuntu 26.04 with an ICEWM X11 session. The package is
 compatible with an existing user-level systemd setup, but does not require
 systemd for the native desktop shell itself.
+
+The staged ISO integration plan, package contract, acceptance checks and future
+Wayland reservation are documented in [`docs/PROJECT_PLAN.md`](docs/PROJECT_PLAN.md).

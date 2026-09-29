@@ -34,6 +34,9 @@ Alpine 可使用 `font-wqy-zenhei`。
 Weston/wlroots + Xwayland 的软件渲染 Wayland 后端预留位置；ICEWM、XDock
 的 EWMH 集成目前仍以 X11 为主，因此暂不启用 Wayland。
 
+第一版本以 Debian + ai-desktop 定制 ISO 为主线，仓库职责、PR 顺序、构建
+命令和验收标准见 [`docs/PROJECT_PLAN.md`](docs/PROJECT_PLAN.md)。
+
 XLaunch 默认进入简约 Menu。Enter、F11 或“全部应用”进入全屏 APP Launch；
 Menu 或 Esc 返回简约模式。
 
