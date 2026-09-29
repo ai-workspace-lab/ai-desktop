@@ -1,0 +1,28 @@
+name: task-ai-desktop
+version: 0.1.0
+target:
+  os: ubuntu
+  release: "26.04"
+  session: icewm
+  display: x11
+repositories:
+  xdock: git@github.com:ai-workspace-lab/XDock.git
+  xlaunch: git@github.com:ai-workspace-lab/XLaunch.git
+profiles:
+  desktop:
+    display_server: existing-xorg
+    remote_access: optional
+  vps:
+    display_server: xorg
+    remote_access: [xrdp, xpra]
+  container:
+    display_server: xvfb
+    init: tini
+    service_manager: dbus-run-session
+components:
+  window_manager: icewm
+  dock: xdock
+  launcher: xlaunch
+  terminal: xfce4-terminal
+  file_manager: thunar
+  browser: [chromium, firefox-esr]

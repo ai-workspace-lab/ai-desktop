@@ -1,0 +1,5 @@
+task-ai-desktop (0.1.0-1) unstable; urgency=medium
+
+  * Add ICEWM/X11 desktop meta-package and desktop, VPS, and container profiles.
+
+ -- AI Workspace Lab <ai-workspace-lab@users.noreply.github.com>  Wed, 30 Sep 2026 00:30:00 +0800
