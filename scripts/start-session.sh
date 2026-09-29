@@ -2,7 +2,7 @@
 set -euo pipefail
 
 XDOCK_BIN="${XDOCK_BIN:-/opt/task-ai-desktop/bin/xdock}"
-XLAUNCH_BIN="${XLAUNCH_BIN:-/opt/task-ai-desktop/bin/XLaunch}"
+XLAUNCH_BIN="${XLAUNCH_BIN:-/opt/task-ai-desktop/bin/xlaunch}"
 STATE_DIR="${XDG_STATE_HOME:-${HOME}/.local/state}/task-ai-desktop"
 mkdir -p "${STATE_DIR}"
 
@@ -22,4 +22,4 @@ start_once() {
 }
 
 start_once xdock "${XDOCK_BIN}" "${STATE_DIR}/xdock.log"
-start_once XLaunch "${XLAUNCH_BIN}" "${STATE_DIR}/xlaunch.log"
+start_once xlaunch "${XLAUNCH_BIN}" "${STATE_DIR}/xlaunch.log"

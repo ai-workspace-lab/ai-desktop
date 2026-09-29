@@ -17,11 +17,22 @@ ICEWM 会话
 | 包 | 用途 | 显示方式 |
 | --- | --- | --- |
 | `task-ai-desktop` | 桌面电脑 | 使用现有 Xorg/显示管理器 |
-| `task-ai-desktop-vps` | VPS | Xorg + XRDP 或 xpra |
-| `task-ai-desktop-container` | 容器 | Xvfb + dbus-run-session + tini |
+| `task-ai-desktop-vps` | VPS | Xvfb + X11VNC + ICEWM |
+| `task-ai-desktop-container` | 容器 | Xvfb + X11VNC + 可选 noVNC |
 
-容器 profile 不依赖 systemd；VPS profile 不强制安装显示管理器；桌面电脑
-可以在现有登录管理器中选择 ICEWM。
+容器 profile 不依赖 systemd；VPS profile 使用纯 CPU 的 Xvfb，不需要物理
+显示器或 GPU；桌面电脑可以在现有登录管理器中选择 ICEWM。
+
+无头会话链路为 `Xvfb → ICEWM → X11VNC → noVNC`。当前统一入口是
+`/usr/lib/task-ai-desktop/start-headless-session.sh`，设置
+`ENABLE_NOVNC=1` 可在 8080 端口提供浏览器访问。Chromium 容器建议把
+`/dev/shm` 提高到至少 2 GiB（Docker 使用 `--shm-size=2g`，Kubernetes
+使用内存型 `emptyDir`），并安装 CJK 字体；Debian 使用 `fonts-noto-cjk`，
+Alpine 可使用 `font-wqy-zenhei`。
+
+当前无头显示后端固定为 Xvfb。保留 `DISPLAY_BACKEND` 接口，为未来引入
+Weston/wlroots + Xwayland 的软件渲染 Wayland 后端预留位置；ICEWM、XDock
+的 EWMH 集成目前仍以 X11 为主，因此暂不启用 Wayland。
 
 XLaunch 默认进入简约 Menu。Enter、F11 或“全部应用”进入全屏 APP Launch；
 Menu 或 Esc 返回简约模式。

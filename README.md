@@ -20,16 +20,65 @@ ICEWM session
 | Package | Use | Display model |
 | --- | --- | --- |
 | `task-ai-desktop` | desktop computer | existing Xorg/display manager |
-| `task-ai-desktop-vps` | VPS | Xorg + XRDP or xpra |
-| `task-ai-desktop-container` | OCI/container | Xvfb + dbus-run-session + tini |
+| `task-ai-desktop-vps` | Debian 13 VPS | Xvfb + X11VNC + ICEWM |
+| `task-ai-desktop-container` | OCI/container | Xvfb + X11VNC + optional noVNC |
 
 The package does not force a display manager. On a desktop, select ICEWM in
-the existing display manager. On a VPS, install the VPS profile and choose
-XRDP or xpra. In a container, the profile avoids systemd and starts a private
-X display.
+the existing display manager. On a Debian 13 VPS, the VPS profile uses
+Xvfb and X11VNC, with no physical display or GPU required. In a container,
+the profile avoids systemd and starts the same private X display; X11VNC
+exposes it as VNC and noVNC/websockify can expose it in a browser.
 
-The container entrypoint is `/usr/lib/task-ai-desktop/start-container.sh`; it
-starts Xvfb, a D-Bus session, ICEWM, XDock and XLaunch under `tini`.
+The shared entrypoint is `/usr/lib/task-ai-desktop/start-headless-session.sh`;
+the container wrapper starts Xvfb, X11VNC, a D-Bus session, ICEWM, XDock and
+XLaunch under `tini`. Set `ENABLE_NOVNC=1` to start noVNC on port 8080 (VNC
+defaults to port 5900).
+
+## Headless profiles
+
+### Debian 13 VPS with Xvfb and X11VNC
+
+Install `task-ai-desktop-vps`, then run the shared entrypoint with a private
+display. VNC viewers connect to port 5900; set `ENABLE_NOVNC=1` to also expose
+the desktop through a browser on port 8080:
+
+```sh
+DISPLAY_NUMBER=99 SCREEN=1920x1080x24 ENABLE_NOVNC=1 \
+  /usr/lib/task-ai-desktop/start-headless-session.sh
+```
+
+Xvfb supplies the virtual X11 display and X11VNC exports it without requiring
+Xorg, a physical display, or GPU memory.
+
+Xvfb is the current headless display backend. It is a good fit for VPS and
+containers because it has no GPU or compositor requirement, but it is a CPU
+renderer: animated pages, video and large canvases consume CPU, and VNC adds
+another capture/encoding cost. A 1920×1080×24 screen uses roughly 8 MiB for
+the raw framebuffer; browser processes and `/dev/shm` are usually the larger
+memory consumers.
+
+### Alpine container with browser access
+
+Use the same `start-container.sh` entrypoint after installing the Alpine
+equivalents of `xvfb`, `icewm`, `x11vnc`, `novnc`, `websockify`, `dbus`, and
+`font-wqy-zenhei`. The process chain is `Xvfb → ICEWM → X11VNC → noVNC`;
+publish TCP 8080 for browser access. Set the container shared memory to at
+least 2 GiB (`--shm-size=2g`, or a memory-backed Kubernetes `emptyDir`) when
+running Chromium-based workloads.
+
+Both profiles should include CJK fonts. Debian uses `fonts-noto-cjk`; Alpine
+can use `font-wqy-zenhei` when that package is available in the selected
+repository.
+
+### Wayland reservation
+
+The package keeps a display-backend seam (`DISPLAY_BACKEND=xvfb`) so a future
+headless Wayland profile can be added without changing the ICEWM/XDock/XLaunch
+session contract. A future backend may use Weston headless or wlroots with
+software rendering and Xwayland for legacy X11 applications. It is not enabled
+yet: ICEWM and the current XDock EWMH integration are X11 components, so Xvfb
+remains the predictable no-GPU backend for Home-Ubuntu, Debian VPS and Alpine
+containers.
 
 ## Components
 

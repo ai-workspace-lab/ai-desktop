@@ -50,16 +50,17 @@ Description: lightweight AI Workspace X11 desktop task
 
 Package: task-ai-desktop-vps
 Architecture: all
-Depends: task-ai-desktop, xorg, xrdp, ${misc:Depends}
-Recommends: xpra, x11vnc
+Depends: task-ai-desktop, xvfb, x11vnc, dbus-x11, ${misc:Depends}
+Recommends: novnc, websockify
 Description: VPS profile for task-ai-desktop
- Adds the Xorg and remote desktop pieces needed to run the ICEWM AI desktop
- on a headless VPS.
+ Adds the Xvfb and X11VNC pieces needed to run the ICEWM AI desktop on a
+ headless VPS without a physical display or GPU.
 
 Package: task-ai-desktop-container
 Architecture: all
-Depends: task-ai-desktop, xvfb, dbus-x11, tini, ${misc:Depends}
+Depends: task-ai-desktop, xvfb, x11vnc, dbus-x11, tini, ${misc:Depends}
 Recommends: novnc, websockify
 Description: container profile for task-ai-desktop
- Adds a minimal Xvfb, D-Bus session and init setup for running the AI desktop
- inside an OCI container without systemd.
+ Adds Xvfb, X11VNC, D-Bus and init setup for running the AI desktop inside an
+ OCI container without systemd; noVNC and websockify provide optional browser
+ access.

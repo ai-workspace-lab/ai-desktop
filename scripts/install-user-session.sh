@@ -16,5 +16,5 @@ fi
 
 touch "${MENU}"
 if ! grep -Fq 'task-ai-desktop XLaunch' "${MENU}"; then
-    printf '\n# task-ai-desktop XLaunch\nprog "task-ai-desktop XLaunch" xlaunch /opt/task-ai-desktop/bin/XLaunch\n' >>"${MENU}"
+    printf '\n# task-ai-desktop XLaunch\nprog "task-ai-desktop XLaunch" xlaunch /opt/task-ai-desktop/bin/xlaunch\n' >>"${MENU}"
 fi
