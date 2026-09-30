@@ -41,7 +41,7 @@ Depends:
  xlaunch,
  chromium | firefox-esr,
  ${misc:Depends}
-Recommends: xorg, lightdm
+Recommends: xorg
 Description: lightweight AI Workspace X11 desktop task
  Meta-package for an ICEWM-based AI desktop with XDock, XLaunch, a terminal,
  Thunar, and Chromium or Firefox. It supports desktop, VPS, and container

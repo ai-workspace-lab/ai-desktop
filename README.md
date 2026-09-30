@@ -23,8 +23,10 @@ ICEWM session
 | `task-ai-desktop-vps` | Debian 13 VPS | Xvfb + X11VNC + ICEWM |
 | `task-ai-desktop-container` | OCI/container | Xvfb + X11VNC + optional noVNC |
 
-The package does not force a display manager. On a desktop, select ICEWM in
-the existing display manager. On a Debian 13 VPS, the VPS profile uses
+The base package does not force a display manager so the container and VPS
+profiles stay headless. The Debian + ai-desktop ISO profile installs SDDM as
+its default display manager and presents ICEWM as the desktop session. On a
+Debian 13 VPS, the VPS profile uses
 Xvfb and X11VNC, with no physical display or GPU required. In a container,
 the profile avoids systemd and starts the same private X display; X11VNC
 exposes it as VNC and noVNC/websockify can expose it in a browser.
@@ -93,7 +95,16 @@ containers.
   `~/.icewm/startup` and `~/.icewm/menu`.
 
 XLaunch opens in compact Menu mode. Enter, F11 or “全部应用” opens the full
-screen application launcher; Menu or Esc returns to the compact mode.
+screen application launcher; Menu or Esc returns to the compact mode. The compact
+Menu is anchored to the lower-left work area with its bottom edge aligned to the
+top of the XDock strut; full-screen mode still covers the whole work area.
+
+The default XDock profile is low power: fish-eye hover magnification, hover
+scaling and dock geometry transitions are disabled while the 78 px EWMH strut
+remains active. ICEWM owns native maximize/minimize actions (`Alt+F10` and
+`Alt+F9`), and opaque move/resize rendering is disabled to reduce CPU use. The
+default files live under `defaults/icewm/` and `defaults/xdock/`;
+`install-user-session.sh` copies them into a user's configuration on first setup.
 
 ## Build component binaries
 

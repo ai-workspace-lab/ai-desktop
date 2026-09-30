@@ -38,7 +38,20 @@ Weston/wlroots + Xwayland 的软件渲染 Wayland 后端预留位置；ICEWM、X
 命令和验收标准见 [`docs/PROJECT_PLAN.md`](docs/PROJECT_PLAN.md)。
 
 XLaunch 默认进入简约 Menu。Enter、F11 或“全部应用”进入全屏 APP Launch；
-Menu 或 Esc 返回简约模式。
+Menu 或 Esc 返回简约模式。简约 Menu 默认贴合 XDock 左下角，窗口底边对齐
+XDock 的顶部；全屏模式仍覆盖整个工作区。
+
+XDock 默认使用低功耗静态模式：关闭鱼眼放大、悬停缩放和尺寸过渡动画，保留
+78 像素 EWMH Dock 占位。窗口最大化/最小化交给 ICEWM 原生操作（`Alt+F10`
+和 `Alt+F9`），并关闭不透明移动/调整大小渲染以节省 CPU。默认文件位于
+`defaults/icewm/` 和 `defaults/xdock/`，`install-user-session.sh` 会在首次
+安装时复制到用户配置目录。
+
+## ISO 默认显示管理器
+
+Debian + ai-desktop ISO 默认安装并启用 SDDM，登录会话选择 ICEWM。基础
+`task-ai-desktop` 包不强制安装显示管理器，以便 VPS 和容器 profile 保持无头；
+ISO profile 会额外加入 SDDM、Xorg 和 ICEWM 会话配置。
 
 ## Home-Ubuntu
 
