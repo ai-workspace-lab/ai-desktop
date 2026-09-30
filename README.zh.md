@@ -47,6 +47,12 @@ XDock 默认使用低功耗静态模式：关闭鱼眼放大、悬停缩放和�
 `defaults/icewm/` 和 `defaults/xdock/`，`install-user-session.sh` 会在首次
 安装时复制到用户配置目录。
 
+## ISO 默认显示管理器
+
+Debian + ai-desktop ISO 默认安装并启用 SDDM，登录会话选择 ICEWM。基础
+`task-ai-desktop` 包不强制安装显示管理器，以便 VPS 和容器 profile 保持无头；
+ISO profile 会额外加入 SDDM、Xorg 和 ICEWM 会话配置。
+
 ## Home-Ubuntu
 
 目标环境是 Ubuntu 26.04 + ICEWM + X11。XLaunch Console/API 可以继续使用

@@ -23,8 +23,10 @@ ICEWM session
 | `task-ai-desktop-vps` | Debian 13 VPS | Xvfb + X11VNC + ICEWM |
 | `task-ai-desktop-container` | OCI/container | Xvfb + X11VNC + optional noVNC |
 
-The package does not force a display manager. On a desktop, select ICEWM in
-the existing display manager. On a Debian 13 VPS, the VPS profile uses
+The base package does not force a display manager so the container and VPS
+profiles stay headless. The Debian + ai-desktop ISO profile installs SDDM as
+its default display manager and presents ICEWM as the desktop session. On a
+Debian 13 VPS, the VPS profile uses
 Xvfb and X11VNC, with no physical display or GPU required. In a container,
 the profile avoids systemd and starts the same private X display; X11VNC
 exposes it as VNC and noVNC/websockify can expose it in a browser.

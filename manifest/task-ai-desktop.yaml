@@ -11,6 +11,8 @@ repositories:
 profiles:
   desktop:
     display_server: existing-xorg
+    display_manager: sddm
+    session: icewm
     remote_access: optional
   vps:
     display_server: xvfb
