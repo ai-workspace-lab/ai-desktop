@@ -39,8 +39,9 @@ Wayland 仅保留后端接口和设计位置。
       `task-ai-desktop-vps`、`task-ai-desktop-container`。
 - [ ] 将三个组件包复制到 isobuilder 的 `config/packages.chroot`，
       通过 `live-build` 生成可启动 ISO。
-- [ ] ISO 默认安装 SDDM、Xorg、ICEWM、字体、终端、文件浏览器、浏览器、
-      Xvfb、X11VNC，并可选安装 noVNC/websockify；SDDM 是默认显示管理器。
+- [ ] ISO 默认安装 LightDM、GTK Greeter、Xorg、ICEWM、字体、终端、文件浏览器、
+      浏览器、Xvfb、X11VNC，并可选安装 noVNC/websockify；LightDM 是默认显示
+      管理器，SDDM 保留为可选方案。
 - [ ] 首次登录自动启动 XDock 和 XLaunch；菜单项指向安装后的
       `/opt/task-ai-desktop/bin/xlaunch`。
 - [ ] ICEWM 根菜单默认由 XLaunch 提供；简约 Menu 贴合 XDock 左下角，
