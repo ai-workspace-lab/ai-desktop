@@ -93,7 +93,16 @@ containers.
   `~/.icewm/startup` and `~/.icewm/menu`.
 
 XLaunch opens in compact Menu mode. Enter, F11 or “全部应用” opens the full
-screen application launcher; Menu or Esc returns to the compact mode.
+screen application launcher; Menu or Esc returns to the compact mode. The compact
+Menu is anchored to the lower-left work area with its bottom edge aligned to the
+top of the XDock strut; full-screen mode still covers the whole work area.
+
+The default XDock profile is low power: fish-eye hover magnification, hover
+scaling and dock geometry transitions are disabled while the 78 px EWMH strut
+remains active. ICEWM owns native maximize/minimize actions (`Alt+F10` and
+`Alt+F9`), and opaque move/resize rendering is disabled to reduce CPU use. The
+default files live under `defaults/icewm/` and `defaults/xdock/`;
+`install-user-session.sh` copies them into a user's configuration on first setup.
 
 ## Build component binaries
 

@@ -1,0 +1,6 @@
+# AI Desktop launcher-first IceWM root menu.
+# XLaunch is the application menu; icewm-menu-fdo is intentionally omitted.
+prog "XLaunch 应用菜单" view-app-grid @XLAUNCH_BIN@
+separator
+prog "重启 ICEWM" icewm icewm --restart
+prog "打开终端" utilities-terminal xfce4-terminal

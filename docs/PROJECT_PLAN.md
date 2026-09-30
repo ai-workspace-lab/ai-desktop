@@ -43,6 +43,10 @@ Wayland 仅保留后端接口和设计位置。
       X11VNC，并可选安装 noVNC/websockify。
 - [ ] 首次登录自动启动 XDock 和 XLaunch；菜单项指向安装后的
       `/opt/task-ai-desktop/bin/xlaunch`。
+- [ ] ICEWM 根菜单默认由 XLaunch 提供；简约 Menu 贴合 XDock 左下角，
+      底边对齐 Dock 顶部，Enter/F11/“全部应用”仍可进入全屏模式。
+- [ ] XDock 默认关闭鱼眼、悬停缩放和几何过渡动画；保持 78 像素 EWMH
+      占位，ICEWM 使用低 CPU 的原生最大化/最小化操作。
 - [ ] 在 Home-Ubuntu（`10.79.0.7`）验证 X11 会话、VPS 无头会话和
       本地项目目录挂载，不把 MacOS 的路径写死到运行时。
 

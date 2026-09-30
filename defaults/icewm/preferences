@@ -1,0 +1,15 @@
+# AI Desktop ICEWM defaults.
+TaskBarShowClock=1
+TaskBarShowAPMStatus=0
+TaskBarShowNetworkStatus=0
+TaskBarShowWindowList=1
+TaskBarShowWorkspaces=1
+ShowDesktop=1
+FocusOnClick=1
+SmartPlacement=1
+CenterLarge=1
+DoubleBuffer=1
+OpaqueMove=0
+OpaqueResize=0
+MinimizeToDesktop=0
+QuickSwitchToMinimized=1

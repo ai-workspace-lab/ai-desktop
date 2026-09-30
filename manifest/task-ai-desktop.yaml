@@ -25,6 +25,17 @@ future:
     display_server: weston-or-wlroots-headless
     rendering: software
     x11_compatibility: xwayland
+defaults:
+  icewm_menu: xlaunch-first
+  xlaunch_menu_anchor: lower-left-above-dock
+  xlaunch_compact_size: 760x540
+  xlaunch_fullscreen_shortcuts: [Enter, F11, "全部应用"]
+  xdock_animation: disabled
+  xdock_geometry: static-78px
+  icewm_window_effects: low-cpu
+  native_window_keys:
+    minimize: Alt+F9
+    maximize: Alt+F10
 components:
   window_manager: icewm
   dock: xdock
