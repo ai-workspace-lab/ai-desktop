@@ -24,7 +24,7 @@ ICEWM session
 | `task-ai-desktop-container` | OCI/container | Xvfb + X11VNC + optional noVNC |
 
 The base package does not force a display manager so the container and VPS
-profiles stay headless. The Debian + ai-desktop ISO profile installs SDDM as
+profiles stay headless. The Debian + ai-desktop ISO profile installs LightDM with the GTK greeter as
 its default display manager and presents ICEWM as the desktop session. On a
 Debian 13 VPS, the VPS profile uses
 Xvfb and X11VNC, with no physical display or GPU required. In a container,

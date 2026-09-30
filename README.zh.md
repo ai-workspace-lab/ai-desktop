@@ -49,9 +49,10 @@ XDock 默认使用低功耗静态模式：关闭鱼眼放大、悬停缩放和�
 
 ## ISO 默认显示管理器
 
-Debian + ai-desktop ISO 默认安装并启用 SDDM，登录会话选择 ICEWM。基础
-`task-ai-desktop` 包不强制安装显示管理器，以便 VPS 和容器 profile 保持无头；
-ISO profile 会额外加入 SDDM、Xorg 和 ICEWM 会话配置。
+Debian + ai-desktop ISO 默认安装并启用 LightDM 和 GTK Greeter，登录会话
+选择 ICEWM。基础 task-ai-desktop 包不强制安装显示管理器，以便 VPS 和
+容器 profile 保持无头；ISO profile 会额外加入 LightDM、Xorg 和 ICEWM 会话
+配置。SDDM 保留为需要 Qt/Wayland 登录界面的可选方案。
 
 ## Home-Ubuntu
 
