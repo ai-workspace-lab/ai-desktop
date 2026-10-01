@@ -27,31 +27,6 @@ Xvfb → ICEWM → XDock/XLaunch → X11VNC → 可选 noVNC/websockify
 当前版本不引入 TigerVNC。`DISPLAY_BACKEND=xvfb` 是当前唯一实现；
 Wayland 仅保留后端接口和设计位置。
 
-包拆分、运行配置和 OCI 镜像的详细契约见
-[`docs/PACKAGE_ARCHITECTURE.md`](PACKAGE_ARCHITECTURE.md)。
-
-## 包结构与运行边界
-
-```text
-task-ai-desktop
-├── task-ai-desktop-core
-├── task-ai-desktop-session
-├── task-ai-desktop-xdock
-├── task-ai-desktop-xlaunch
-├── task-ai-desktop-apps
-├── task-ai-desktop-vps
-├── task-ai-desktop-container
-└── task-ai-desktop-dev
-```
-
-`task-ai-desktop` 是完整桌面元包；core、session、组件和 apps 可以单独
-安装。VPS profile 默认走 `Xvfb + X11VNC`，同时推荐 Xorg、XRDP、xpra、
-noVNC 和 websockify 作为可选传输。容器 profile 使用 `tini + Xvfb +
-dbus-run-session + ICEWM`，OCI 定义位于 `containers/debian/Containerfile`。
-
-开发工具链不进入运行时核心包，使用 `task-ai-desktop-dev` 作为建议入口，
-实际版本继续由 Home-Ubuntu 基线清单控制。
-
 ## V1 交付范围
 
 - [ ] 在 Debian 13 构建机上安装 `live-build`、`debootstrap`、`xorriso`、
@@ -60,17 +35,21 @@ dbus-run-session + ICEWM`，OCI 定义位于 `containers/debian/Containerfile`�
       above 状态和 partial strut。
 - [ ] 构建 XLaunch 的 Linux/X11 `.deb`，验证 freedesktop 应用发现、
       `gio` 启动、Menu/全屏切换和图标主题读取。
-- [ ] 构建 `task-ai-desktop` 元包及两个 profile：
-      `task-ai-desktop-vps`、`task-ai-desktop-container`，并拆分 core、
-      session、XDock、XLaunch、apps 子包。
-- [ ] 构建 Debian 13 OCI 镜像，验证 `/usr/bin/tini`、Xvfb、ICEWM、XDock、
-      XLaunch 和 healthcheck，不依赖 systemd。
+- [ ] 构建 task-ai-desktop-core、task-ai-desktop-kde-plasma-core、
+      task-ai-desktop-vps 和 task-ai-desktop-container；保留 task-ai-desktop
+      作为 ICEWM 兼容 meta-package。
 - [ ] 将三个组件包复制到 isobuilder 的 `config/packages.chroot`，
       通过 `live-build` 生成可启动 ISO。
-- [ ] ISO 默认安装 ICEWM、X11、字体、终端、文件浏览器、浏览器、Xvfb、
-      X11VNC，并可选安装 noVNC/websockify。
+- [ ] ISO 使用一个统一 profile，默认安装 LightDM、GTK Greeter、Xorg、ICEWM、
+      字体、终端、文件浏览器和浏览器；构建参数可切换 SDDM，不再拆分独立
+      的 SDDM 包。可选安装 task-ai-desktop-kde-plasma-core，KDE 会话使用
+      XLaunch 作为应用菜单，XDock 保持可选。
 - [ ] 首次登录自动启动 XDock 和 XLaunch；菜单项指向安装后的
       `/opt/task-ai-desktop/bin/xlaunch`。
+- [ ] ICEWM 根菜单默认由 XLaunch 提供；简约 Menu 贴合 XDock 左下角，
+      底边对齐 Dock 顶部，Enter/F11/“全部应用”仍可进入全屏模式。
+- [ ] XDock 默认关闭鱼眼、悬停缩放和几何过渡动画；保持 78 像素 EWMH
+      占位，ICEWM 使用低 CPU 的原生最大化/最小化操作。
 - [ ] 在 Home-Ubuntu（`10.79.0.7`）验证 X11 会话、VPS 无头会话和
       本地项目目录挂载，不把 MacOS 的路径写死到运行时。
 
@@ -98,11 +77,10 @@ dbus-run-session + ICEWM`，OCI 定义位于 `containers/debian/Containerfile`�
    └── isobuilder/
    ```
 
-2. 编译并生成 XDock、XLaunch、ai-desktop `.deb`。包名契约为：
-   `xdock`、`xlaunch`、`task-ai-desktop-core`、`task-ai-desktop-session`、
-   `task-ai-desktop-xdock`、`task-ai-desktop-xlaunch`,
-   `task-ai-desktop-apps`、`task-ai-desktop`、`task-ai-desktop-vps` 和
-   `task-ai-desktop-container`。
+2. 编译并生成 XDock、XLaunch、ai-desktop Debian 包。包名契约为：
+   task-ai-desktop-core、task-ai-desktop-kde-plasma-core、
+   task-ai-desktop-vps、task-ai-desktop-container；兼容包为
+   task-ai-desktop。
 
 3. 使用 isobuilder 的 ISO profile：
 
@@ -116,14 +94,6 @@ dbus-run-session + ICEWM`，OCI 定义位于 `containers/debian/Containerfile`�
 
    ```sh
    ENABLE_NOVNC=1 /usr/lib/task-ai-desktop/start-headless-session.sh
-   ```
-
-5. 构建并运行 OCI 镜像：
-
-   ```sh
-   podman build -f containers/debian/Containerfile -t task-ai-desktop:debian13 .
-   podman run --rm --shm-size=2g -e ENABLE_NOVNC=1 \
-     -p 8080:8080 -p 5900:5900 task-ai-desktop:debian13
    ```
 
 ## 版本基线
@@ -158,8 +128,6 @@ Home-Ubuntu 对齐的工具版本清单：
   `ENABLE_NOVNC=1` 时浏览器可访问 8080。
 - CJK 文本正常显示；Chromium 容器的 `/dev/shm` 至少 2 GiB。
 - 同一套包和脚本可在 Home-Ubuntu 本地 X11 会话复用。
-- Debian OCI 镜像的 healthcheck 能检测 X display、ICEWM、XDock 和 XLaunch。
-- `/opt/task-ai-desktop/bin/xdock`、`xlaunch` 和 `XLaunch` 兼容别名可用。
 
 ## V1 之外
 
@@ -171,3 +139,15 @@ Home-Ubuntu 对齐的工具版本清单：
 Wayland 后端的预留约束：继续复用 ICEWM/XDock/XLaunch 的会话接口，
 使用软件渲染（例如 `WLR_RENDERER=pixman`），并通过 Xwayland 兼容当前
 X11 应用；在 V1 的 Xvfb 路径稳定前不切换默认后端。
+
+## OCI packaging follow-up
+
+- [ ] Build the Debian 13 OCI definition in `containers/debian/Containerfile`
+      with distribution-compatible local component and profile packages.
+- [ ] Check the shared core script ownership, compatibility aliases, `tini`,
+      Xvfb, ICEWM, XLaunch and optional XDock inside the built image.
+- [ ] Validate noVNC access and the display-specific healthcheck at runtime.
+
+The primary package profiles remain core, KDE Plasma core, ICEWM compatibility,
+VPS and container. Optional aliases do not replace that profile model. No real
+OCI or ISO build is implied by merging source definitions.

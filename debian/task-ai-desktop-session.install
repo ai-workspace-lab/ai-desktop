@@ -1,5 +1,0 @@
-scripts/start-session.sh usr/lib/task-ai-desktop
-scripts/start-headless-session.sh usr/lib/task-ai-desktop
-scripts/install-user-session.sh usr/lib/task-ai-desktop
-scripts/healthcheck.sh usr/lib/task-ai-desktop
-manifest/task-ai-desktop.yaml usr/share/task-ai-desktop

@@ -15,6 +15,7 @@ export XDG_CURRENT_DESKTOP="${XDG_CURRENT_DESKTOP:-ICEWM}"
 
 start_once() {
     local name="$1" binary="$2" log_file="$3"
+    shift 3
     if [[ ! -x "${binary}" ]]; then
         printf '[task-ai-desktop] missing %s: %s\n' "${name}" "${binary}" >&2
         return 0
@@ -22,8 +23,10 @@ start_once() {
     if pgrep -x -u "$(id -u)" "${name}" >/dev/null 2>&1; then
         return 0
     fi
-    nohup "${binary}" >"${log_file}" 2>&1 </dev/null &
+    nohup "${binary}" "$@" >"${log_file}" 2>&1 </dev/null &
 }
 
-start_once xdock "${XDOCK_BIN}" "${STATE_DIR}/xdock.log"
-start_once xlaunch "${XLAUNCH_BIN}" "${STATE_DIR}/xlaunch.log"
+if [[ "${ENABLE_XDOCK:-1}" != 0 ]]; then
+    start_once xdock "${XDOCK_BIN}" "${STATE_DIR}/xdock.log"
+fi
+start_once xlaunch "${XLAUNCH_BIN}" "${STATE_DIR}/xlaunch.log" --hidden

@@ -17,12 +17,18 @@ ICEWM 会话
 
 | 包 | 用途 | 显示方式 |
 | --- | --- | --- |
-| `task-ai-desktop` | 桌面电脑 | 使用现有 Xorg/显示管理器 |
-| `task-ai-desktop-vps` | VPS | Xvfb + X11VNC + ICEWM |
-| `task-ai-desktop-container` | 容器 | Xvfb + X11VNC + 可选 noVNC |
+| task-ai-desktop-core | 共享运行时 | X11/Qt/XLaunch，不绑定 DM 或 WM |
+| task-ai-desktop-kde-plasma-core | 日常 KDE Plasma | KDE Plasma Core + XLaunch 菜单，XDock 可选 |
+| task-ai-desktop | ICEWM 兼容 profile | 在 core 上加入 ICEWM + XDock |
+| task-ai-desktop-vps | VPS | Xvfb + X11VNC + ICEWM |
+| task-ai-desktop-container | 容器 | Xvfb + X11VNC + 可选 noVNC |
 
-容器 profile 不依赖 systemd；VPS profile 使用纯 CPU 的 Xvfb，不需要物理
-显示器或 GPU；桌面电脑可以在现有登录管理器中选择 ICEWM。
+task-ai-desktop-core 不绑定显示管理器或窗口管理器，可复用于 KDE、VPS 和
+容器。Debian + ai-desktop ISO 默认使用 LightDM + GTK Greeter，并支持 SDDM
+作为可选显示管理器，默认会话仍为 ICEWM。task-ai-desktop-kde-plasma-core
+面向日常 KDE Plasma 使用，使用 XLaunch 作为 AI 应用菜单；XDock 仅在需要
+底部 Dock 时单独安装。容器 profile 不依赖 systemd；VPS profile 使用纯 CPU
+的 Xvfb，不需要物理显示器或 GPU。
 
 无头会话链路为 `Xvfb → ICEWM → X11VNC → noVNC`。当前统一入口是
 `/usr/lib/task-ai-desktop/start-headless-session.sh`，设置
@@ -43,9 +49,31 @@ Weston/wlroots + Xwayland 的软件渲染 Wayland 后端预留位置；ICEWM、X
 [`containers/debian/README.md`](containers/debian/README.md)。
 
 XLaunch 默认进入简约 Menu。Enter、F11 或“全部应用”进入全屏 APP Launch；
-Menu 或 Esc 返回简约模式。
+Menu 或 Esc 返回简约模式。简约 Menu 默认贴合 XDock 左下角，窗口底边对齐
+XDock 的顶部；全屏模式覆盖整个屏幕。
+
+XDock 默认使用低功耗静态模式：关闭鱼眼放大、悬停缩放和尺寸过渡动画，保留
+78 像素 EWMH Dock 占位。窗口最大化/最小化交给 ICEWM 原生操作（`Alt+F10`
+和 `Alt+F9`），并关闭不透明移动/调整大小渲染以节省 CPU。默认文件位于
+`defaults/icewm/` 和 `defaults/xdock/`，`install-user-session.sh` 会在首次
+安装时复制到用户配置目录。
+
+## ISO 默认显示管理器
+
+Debian + ai-desktop ISO 默认安装并启用 LightDM 和 GTK Greeter，登录会话
+选择 ICEWM；构建参数可以选择 SDDM。ISO 只保留一个 profile，不再拆分
+独立的 task-ai-desktop-sddm 包。可选的 KDE Plasma Core 可以作为日常桌面
+会话安装，XLaunch 通过 KDE autostart 提供统一应用菜单。
 
 ## Home-Ubuntu
 
 目标环境是 Ubuntu 26.04 + ICEWM + X11。XLaunch Console/API 可以继续使用
 systemd 用户服务，但 XDock 和 XLaunch 的原生桌面启动不依赖 systemd。
+
+## 用户与会话默认交互
+
+XLaunch 右下角仅保留 32px 用户/会话和收起图标；登录、注销、关机等只在
+上展开、右对齐的下拉菜单中显示一次，使用浅色文字。XDock 右侧头像提供
+相同的动作入口。破坏当前会话或主机状态的动作需要确认，默认焦点在取消。
+未实际执行注销或电源操作作为验证。SDDM 文字修复参考 defaults/sddm，
+不改变 LightDM ISO 默认值。

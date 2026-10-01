@@ -1,9 +1,8 @@
 # task-ai-desktop
 
-`task-ai-desktop` is a Debian/Ubuntu meta-package family for AI Workspace. It
-keeps ICEWM as the X11 window manager and combines XDock, XLaunch, a terminal,
-a file manager and a web browser. The same session contract is used on desktop
-computers, VPS hosts and OCI containers.
+`task-ai-desktop` is a small X11 desktop bundle for AI Workspace. It keeps
+ICEWM as the window manager and combines XDock, XLaunch, a terminal, a file
+manager and a web browser into one installable Debian/Ubuntu meta-package.
 
 The default shell is deliberately small:
 
@@ -20,17 +19,19 @@ ICEWM session
 
 | Package | Use | Display model |
 | --- | --- | --- |
-| `task-ai-desktop` | desktop computer | existing Xorg/display manager |
-| `task-ai-desktop-vps` | Debian 13 VPS | Xvfb + X11VNC + ICEWM |
-| `task-ai-desktop-container` | OCI/container | Xvfb + X11VNC + optional noVNC |
+| task-ai-desktop-core | shared runtime | X11/Qt/XLaunch, no DM or WM |
+| task-ai-desktop-kde-plasma-core | daily KDE Plasma desktop | Plasma core + XLaunch menu; XDock optional |
+| task-ai-desktop | ICEWM compatibility profile | ICEWM + XDock on top of core |
+| task-ai-desktop-vps | Debian 13 VPS | Xvfb + X11VNC + ICEWM |
+| task-ai-desktop-container | OCI/container | Xvfb + X11VNC + optional noVNC |
 
-The runtime is split into `task-ai-desktop-core`, `task-ai-desktop-session`,
-`task-ai-desktop-xdock`, `task-ai-desktop-xlaunch` and
-`task-ai-desktop-apps`. `task-ai-desktop` is the complete desktop meta-package;
-`task-ai-desktop-dev` keeps the development toolchain separate.
-
-The package does not force a display manager. On a desktop, select ICEWM in
-the existing display manager. On a Debian 13 VPS, the VPS profile uses
+task-ai-desktop-core does not force a display manager or window manager, so it
+can be reused by KDE, VPS and container profiles. The Debian + ai-desktop ISO
+profile uses LightDM with the GTK greeter by default, supports SDDM as an
+alternative display manager, and presents ICEWM as the default session. The
+optional KDE Plasma core profile uses XLaunch as the application menu; XDock can
+be installed separately when a dock is desired. On a
+Debian 13 VPS, the VPS profile uses
 Xvfb and X11VNC, with no physical display or GPU required. In a container,
 the profile avoids systemd and starts the same private X display; X11VNC
 exposes it as VNC and noVNC/websockify can expose it in a browser.
@@ -55,9 +56,6 @@ DISPLAY_NUMBER=99 SCREEN=1920x1080x24 ENABLE_NOVNC=1 \
 
 Xvfb supplies the virtual X11 display and X11VNC exports it without requiring
 Xorg, a physical display, or GPU memory.
-
-The Debian package layout also provides `/opt/task-ai-desktop/bin/xdock`,
-`xlaunch` and the compatibility alias `XLaunch` for existing ICEWM menu files.
 
 Xvfb is the current headless display backend. It is a good fit for VPS and
 containers because it has no GPU or compositor requirement, but it is a CPU
@@ -91,18 +89,30 @@ containers.
 
 ## Components
 
-- `task-ai-desktop`: X11, D-Bus, XDG, fonts, icons, GVFS and Qt runtime
-  dependencies, plus the desktop applications.
-- `task-ai-desktop-xdock`: XDock built from
-  `git@github.com:ai-workspace-lab/XDock.git`.
-- `task-ai-desktop-xlaunch`: XLaunch built from
-  `git@github.com:ai-workspace-lab/XLaunch.git`.
-- `scripts/start-session.sh`: starts XDock and XLaunch in an ICEWM session.
-- `scripts/install-user-session.sh`: safely adds the shell to a user's
-  `~/.icewm/startup` and `~/.icewm/menu`.
+- task-ai-desktop-core: shared X11, D-Bus, XDG, fonts, icons, GVFS and Qt
+  runtime with XLaunch and the common terminal, file manager and browser.
+- task-ai-desktop-kde-plasma-core: optional daily KDE Plasma core. XLaunch is
+  started through KDE autostart as the AI application menu; XDock is optional.
+- task-ai-desktop: compatibility profile that adds ICEWM and XDock to core.
+- task-ai-desktop-vps: core plus ICEWM, Xvfb and X11VNC without a display manager.
+- task-ai-desktop-container: core plus ICEWM, Xvfb, X11VNC and tini without
+  systemd or a display manager.
+- XDock and XLaunch are built from their standalone repositories and consumed
+  as Debian packages.
+- start-session.sh starts XDock and XLaunch in an ICEWM session.
+- install-user-session.sh safely adds the ICEWM shell to a user profile.
 
 XLaunch opens in compact Menu mode. Enter, F11 or “全部应用” opens the full
-screen application launcher; Menu or Esc returns to the compact mode.
+screen application launcher; Menu or Esc returns to the compact mode. The compact
+Menu is anchored to the lower-left work area with its bottom edge aligned to the
+top of the XDock strut; full-screen mode still covers the whole screen.
+
+The default XDock profile is low power: fish-eye hover magnification, hover
+scaling and dock geometry transitions are disabled while the 78 px EWMH strut
+remains active. ICEWM owns native maximize/minimize actions (`Alt+F10` and
+`Alt+F9`), and opaque move/resize rendering is disabled to reduce CPU use. The
+default files live under `defaults/icewm/` and `defaults/xdock/`;
+`install-user-session.sh` copies them into a user's configuration on first setup.
 
 ## Build component binaries
 
@@ -133,6 +143,13 @@ systemd for the native desktop shell itself.
 
 The staged ISO integration plan, package contract, acceptance checks and future
 Wayland reservation are documented in [`docs/PROJECT_PLAN.md`](docs/PROJECT_PLAN.md).
-The package split and OCI image contract are in
-[`docs/PACKAGE_ARCHITECTURE.md`](docs/PACKAGE_ARCHITECTURE.md) and
-[`containers/debian/README.md`](containers/debian/README.md).
+
+## OCI packaging and compatibility aliases
+
+The current profiles are core, KDE Plasma core, ICEWM, VPS and container.
+Optional session/component/apps aliases retain older package names without
+changing core ownership or making KDE install ICEWM. Development tools remain
+optional. See [package architecture](docs/PACKAGE_ARCHITECTURE.md) and the
+[Debian OCI build contract](containers/debian/README.md). The OCI definition
+consumes locally built distribution-compatible `.deb` files; an actual image
+build and runtime acceptance remain required.

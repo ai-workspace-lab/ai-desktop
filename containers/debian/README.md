@@ -10,13 +10,8 @@ must contain at least:
 
 ```text
 task-ai-desktop-core_*.deb
-task-ai-desktop-session_*.deb
-task-ai-desktop-xdock_*.deb
-task-ai-desktop-xlaunch_*.deb
-task-ai-desktop-apps_*.deb
-task-ai-desktop_*.deb
 task-ai-desktop-container_*.deb
-xdock_*.deb
+xdock_*.deb  # omit only when ENABLE_XDOCK=0
 xlaunch_*.deb
 ```
 
@@ -40,4 +35,5 @@ podman run --rm --shm-size=2g \
 
 The runtime contract is `DISPLAY=:99`, `QT_QPA_PLATFORM=xcb` and
 `XDG_CURRENT_DESKTOP=ICEWM`. `/usr/lib/task-ai-desktop/healthcheck.sh` verifies
-the X display, ICEWM, XDock and XLaunch processes.
+the X display and same-display ICEWM/XLaunch processes, plus XDock unless
+ENABLE_XDOCK=0. Optional compatibility aliases are not required.
