@@ -19,13 +19,18 @@ ICEWM session
 
 | Package | Use | Display model |
 | --- | --- | --- |
-| `task-ai-desktop` | desktop computer | existing Xorg/display manager |
-| `task-ai-desktop-vps` | Debian 13 VPS | Xvfb + X11VNC + ICEWM |
-| `task-ai-desktop-container` | OCI/container | Xvfb + X11VNC + optional noVNC |
+| task-ai-desktop-core | shared runtime | X11/Qt/XLaunch, no DM or WM |
+| task-ai-desktop-kde-plasma-core | daily KDE Plasma desktop | Plasma core + XLaunch menu; XDock optional |
+| task-ai-desktop | ICEWM compatibility profile | ICEWM + XDock on top of core |
+| task-ai-desktop-vps | Debian 13 VPS | Xvfb + X11VNC + ICEWM |
+| task-ai-desktop-container | OCI/container | Xvfb + X11VNC + optional noVNC |
 
-The base package does not force a display manager so the container and VPS
-profiles stay headless. The Debian + ai-desktop ISO profile installs LightDM with the GTK greeter as
-its default display manager and presents ICEWM as the desktop session. On a
+task-ai-desktop-core does not force a display manager or window manager, so it
+can be reused by KDE, VPS and container profiles. The Debian + ai-desktop ISO
+profile uses LightDM with the GTK greeter by default, supports SDDM as an
+alternative display manager, and presents ICEWM as the default session. The
+optional KDE Plasma core profile uses XLaunch as the application menu; XDock can
+be installed separately when a dock is desired. On a
 Debian 13 VPS, the VPS profile uses
 Xvfb and X11VNC, with no physical display or GPU required. In a container,
 the profile avoids systemd and starts the same private X display; X11VNC
@@ -84,15 +89,18 @@ containers.
 
 ## Components
 
-- `task-ai-desktop`: X11, D-Bus, XDG, fonts, icons, GVFS and Qt runtime
-  dependencies, plus the desktop applications.
-- `task-ai-desktop-xdock`: XDock built from
-  `git@github.com:ai-workspace-lab/XDock.git`.
-- `task-ai-desktop-xlaunch`: XLaunch built from
-  `git@github.com:ai-workspace-lab/XLaunch.git`.
-- `scripts/start-session.sh`: starts XDock and XLaunch in an ICEWM session.
-- `scripts/install-user-session.sh`: safely adds the shell to a user's
-  `~/.icewm/startup` and `~/.icewm/menu`.
+- task-ai-desktop-core: shared X11, D-Bus, XDG, fonts, icons, GVFS and Qt
+  runtime with XLaunch and the common terminal, file manager and browser.
+- task-ai-desktop-kde-plasma-core: optional daily KDE Plasma core. XLaunch is
+  started through KDE autostart as the AI application menu; XDock is optional.
+- task-ai-desktop: compatibility profile that adds ICEWM and XDock to core.
+- task-ai-desktop-vps: core plus ICEWM, Xvfb and X11VNC without a display manager.
+- task-ai-desktop-container: core plus ICEWM, Xvfb, X11VNC and tini without
+  systemd or a display manager.
+- XDock and XLaunch are built from their standalone repositories and consumed
+  as Debian packages.
+- start-session.sh starts XDock and XLaunch in an ICEWM session.
+- install-user-session.sh safely adds the ICEWM shell to a user profile.
 
 XLaunch opens in compact Menu mode. Enter, F11 or “全部应用” opens the full
 screen application launcher; Menu or Esc returns to the compact mode. The compact

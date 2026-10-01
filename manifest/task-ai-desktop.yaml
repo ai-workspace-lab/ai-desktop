@@ -9,10 +9,13 @@ repositories:
   xdock: git@github.com:ai-workspace-lab/XDock.git
   xlaunch: git@github.com:ai-workspace-lab/XLaunch.git
 profiles:
-  desktop:
+  iso:
     display_server: existing-xorg
     display_manager: lightdm
+    display_manager_options: [lightdm, sddm]
     session: icewm
+    optional_desktop_core: kde-plasma
+    launcher: xlaunch
     remote_access: optional
   vps:
     display_server: xvfb
@@ -39,8 +42,8 @@ defaults:
     minimize: Alt+F9
     maximize: Alt+F10
 components:
-  window_manager: icewm
-  dock: xdock
+  window_manager: [icewm, kde-plasma]
+  dock: optional-xdock
   launcher: xlaunch
   terminal: xfce4-terminal
   file_manager: thunar

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=XLaunch AI Desktop Menu
+Comment=Use XLaunch as the AI application menu in KDE Plasma
+Exec=/opt/task-ai-desktop/bin/xlaunch
+TryExec=/opt/task-ai-desktop/bin/xlaunch
+Terminal=false
+OnlyShowIn=KDE;
+X-GNOME-Autostart-enabled=true
+X-KDE-autostart-after=panel
