@@ -34,8 +34,10 @@ Depends:
  libqt6quick6,
  libqt6quickcontrols2-6,
  libqt6widgets6,
+ libqt6dbus6,
  qt6-qpa-plugins,
  libxcb1,
+ libx11-xcb1,
  xlaunch,
  chromium | firefox-esr,
  ${misc:Depends}
@@ -89,3 +91,35 @@ Description: container profile for task-ai-desktop
  Adds Xvfb, X11VNC, D-Bus, and init setup for an OCI container without
  systemd or a display manager. noVNC and websockify provide optional browser
  access.
+
+Package: task-ai-desktop-session
+Architecture: all
+Depends: task-ai-desktop-core, icewm, ${misc:Depends}
+Description: optional ICEWM session alias for task-ai-desktop
+ Selects ICEWM while common session scripts remain owned by the core package.
+
+Package: task-ai-desktop-xdock
+Architecture: all
+Depends: task-ai-desktop-core, xdock, ${misc:Depends}
+Description: optional XDock integration alias for task-ai-desktop
+ Provides the /opt/task-ai-desktop/bin/xdock compatibility path without
+ selecting a window manager or display manager.
+
+Package: task-ai-desktop-xlaunch
+Architecture: all
+Depends: task-ai-desktop-core, ${misc:Depends}
+Description: optional XLaunch integration alias for task-ai-desktop
+ Provides the xlaunch and XLaunch compatibility paths; XLaunch is in core.
+
+Package: task-ai-desktop-apps
+Architecture: all
+Depends: task-ai-desktop-core, ${misc:Depends}
+Description: compatibility alias for shared desktop applications
+ The terminal, file manager and browser remain in the shared core profile.
+
+Package: task-ai-desktop-dev
+Architecture: all
+Depends: task-ai-desktop-core, ${misc:Depends}
+Suggests: git, gh, python3, golang, nodejs, npm, jq
+Description: optional desktop development-tool recommendations
+ Keeps development tools out of the mandatory desktop runtime dependencies.

@@ -1,7 +1,8 @@
 # task-ai-desktop
 
-`task-ai-desktop` 是面向 AI Workspace 的轻量 X11 桌面包。它保留 ICEWM
-作为窗口管理器，并组合 XDock、XLaunch、终端、文件浏览器和 Web 浏览器。
+`task-ai-desktop` 是面向 AI Workspace 的 Debian/Ubuntu 元包系列。它保留
+ICEWM 作为 X11 窗口管理器，并组合 XDock、XLaunch、终端、文件浏览器和
+Web 浏览器；桌面电脑、VPS 和 OCI 容器使用统一的会话契约。
 
 ```text
 ICEWM 会话
@@ -43,9 +44,13 @@ Weston/wlroots + Xwayland 的软件渲染 Wayland 后端预留位置；ICEWM、X
 第一版本以 Debian + ai-desktop 定制 ISO 为主线，仓库职责、PR 顺序、构建
 命令和验收标准见 [`docs/PROJECT_PLAN.md`](docs/PROJECT_PLAN.md)。
 
+包层级拆分、`/opt/task-ai-desktop` 目录契约和 Debian OCI 镜像见
+[`docs/PACKAGE_ARCHITECTURE.md`](docs/PACKAGE_ARCHITECTURE.md) 与
+[`containers/debian/README.md`](containers/debian/README.md)。
+
 XLaunch 默认进入简约 Menu。Enter、F11 或“全部应用”进入全屏 APP Launch；
 Menu 或 Esc 返回简约模式。简约 Menu 默认贴合 XDock 左下角，窗口底边对齐
-XDock 的顶部；全屏模式仍覆盖整个工作区。
+XDock 的顶部；全屏模式覆盖整个屏幕。
 
 XDock 默认使用低功耗静态模式：关闭鱼眼放大、悬停缩放和尺寸过渡动画，保留
 78 像素 EWMH Dock 占位。窗口最大化/最小化交给 ICEWM 原生操作（`Alt+F10`
@@ -64,3 +69,11 @@ Debian + ai-desktop ISO 默认安装并启用 LightDM 和 GTK Greeter，登录�
 
 目标环境是 Ubuntu 26.04 + ICEWM + X11。XLaunch Console/API 可以继续使用
 systemd 用户服务，但 XDock 和 XLaunch 的原生桌面启动不依赖 systemd。
+
+## 用户与会话默认交互
+
+XLaunch 右下角仅保留 32px 用户/会话和收起图标；登录、注销、关机等只在
+上展开、右对齐的下拉菜单中显示一次，使用浅色文字。XDock 右侧头像提供
+相同的动作入口。破坏当前会话或主机状态的动作需要确认，默认焦点在取消。
+未实际执行注销或电源操作作为验证。SDDM 文字修复参考 defaults/sddm，
+不改变 LightDM ISO 默认值。

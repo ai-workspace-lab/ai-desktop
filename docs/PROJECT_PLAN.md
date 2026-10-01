@@ -139,3 +139,15 @@ Home-Ubuntu 对齐的工具版本清单：
 Wayland 后端的预留约束：继续复用 ICEWM/XDock/XLaunch 的会话接口，
 使用软件渲染（例如 `WLR_RENDERER=pixman`），并通过 Xwayland 兼容当前
 X11 应用；在 V1 的 Xvfb 路径稳定前不切换默认后端。
+
+## OCI packaging follow-up
+
+- [ ] Build the Debian 13 OCI definition in `containers/debian/Containerfile`
+      with distribution-compatible local component and profile packages.
+- [ ] Check the shared core script ownership, compatibility aliases, `tini`,
+      Xvfb, ICEWM, XLaunch and optional XDock inside the built image.
+- [ ] Validate noVNC access and the display-specific healthcheck at runtime.
+
+The primary package profiles remain core, KDE Plasma core, ICEWM compatibility,
+VPS and container. Optional aliases do not replace that profile model. No real
+OCI or ISO build is implied by merging source definitions.

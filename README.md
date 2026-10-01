@@ -105,7 +105,7 @@ containers.
 XLaunch opens in compact Menu mode. Enter, F11 or “全部应用” opens the full
 screen application launcher; Menu or Esc returns to the compact mode. The compact
 Menu is anchored to the lower-left work area with its bottom edge aligned to the
-top of the XDock strut; full-screen mode still covers the whole work area.
+top of the XDock strut; full-screen mode still covers the whole screen.
 
 The default XDock profile is low power: fish-eye hover magnification, hover
 scaling and dock geometry transitions are disabled while the 78 px EWMH strut
@@ -143,3 +143,13 @@ systemd for the native desktop shell itself.
 
 The staged ISO integration plan, package contract, acceptance checks and future
 Wayland reservation are documented in [`docs/PROJECT_PLAN.md`](docs/PROJECT_PLAN.md).
+
+## OCI packaging and compatibility aliases
+
+The current profiles are core, KDE Plasma core, ICEWM, VPS and container.
+Optional session/component/apps aliases retain older package names without
+changing core ownership or making KDE install ICEWM. Development tools remain
+optional. See [package architecture](docs/PACKAGE_ARCHITECTURE.md) and the
+[Debian OCI build contract](containers/debian/README.md). The OCI definition
+consumes locally built distribution-compatible `.deb` files; an actual image
+build and runtime acceptance remain required.

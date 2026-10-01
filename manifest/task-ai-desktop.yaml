@@ -1,5 +1,5 @@
 name: task-ai-desktop
-version: 0.1.0
+version: 0.2.0
 target:
   os: ubuntu
   release: "26.04"
@@ -33,7 +33,7 @@ future:
 defaults:
   icewm_menu: xlaunch-first
   xlaunch_menu_anchor: lower-left-above-dock
-  xlaunch_compact_size: 760x540
+  xlaunch_compact_size: 520x560
   xlaunch_fullscreen_shortcuts: [Enter, F11, "全部应用"]
   xdock_animation: disabled
   xdock_geometry: static-78px
@@ -48,3 +48,10 @@ components:
   terminal: xfce4-terminal
   file_manager: thunar
   browser: [chromium, firefox-esr]
+packages:
+  core: task-ai-desktop-core
+  kde: task-ai-desktop-kde-plasma-core
+  icewm: task-ai-desktop
+  vps: task-ai-desktop-vps
+  container: task-ai-desktop-container
+  development: task-ai-desktop-dev
