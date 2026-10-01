@@ -35,13 +35,15 @@ Wayland 仅保留后端接口和设计位置。
       above 状态和 partial strut。
 - [ ] 构建 XLaunch 的 Linux/X11 `.deb`，验证 freedesktop 应用发现、
       `gio` 启动、Menu/全屏切换和图标主题读取。
-- [ ] 构建 `task-ai-desktop` 元包及两个 profile：
-      `task-ai-desktop-vps`、`task-ai-desktop-container`。
+- [ ] 构建 task-ai-desktop-core、task-ai-desktop-kde-plasma-core、
+      task-ai-desktop-vps 和 task-ai-desktop-container；保留 task-ai-desktop
+      作为 ICEWM 兼容 meta-package。
 - [ ] 将三个组件包复制到 isobuilder 的 `config/packages.chroot`，
       通过 `live-build` 生成可启动 ISO。
-- [ ] ISO 默认安装 LightDM、GTK Greeter、Xorg、ICEWM、字体、终端、文件浏览器、
-      浏览器、Xvfb、X11VNC，并可选安装 noVNC/websockify；LightDM 是默认显示
-      管理器，SDDM 保留为可选方案。
+- [ ] ISO 使用一个统一 profile，默认安装 LightDM、GTK Greeter、Xorg、ICEWM、
+      字体、终端、文件浏览器和浏览器；构建参数可切换 SDDM，不再拆分独立
+      的 SDDM 包。可选安装 task-ai-desktop-kde-plasma-core，KDE 会话使用
+      XLaunch 作为应用菜单，XDock 保持可选。
 - [ ] 首次登录自动启动 XDock 和 XLaunch；菜单项指向安装后的
       `/opt/task-ai-desktop/bin/xlaunch`。
 - [ ] ICEWM 根菜单默认由 XLaunch 提供；简约 Menu 贴合 XDock 左下角，
@@ -75,9 +77,10 @@ Wayland 仅保留后端接口和设计位置。
    └── isobuilder/
    ```
 
-2. 编译并生成 XDock、XLaunch、ai-desktop `.deb`。包名契约为：
-   `xdock`、`xlaunch`、`task-ai-desktop`、`task-ai-desktop-vps`、
-   `task-ai-desktop-container`。
+2. 编译并生成 XDock、XLaunch、ai-desktop Debian 包。包名契约为：
+   task-ai-desktop-core、task-ai-desktop-kde-plasma-core、
+   task-ai-desktop-vps、task-ai-desktop-container；兼容包为
+   task-ai-desktop。
 
 3. 使用 isobuilder 的 ISO profile：
 

@@ -16,12 +16,18 @@ ICEWM 会话
 
 | 包 | 用途 | 显示方式 |
 | --- | --- | --- |
-| `task-ai-desktop` | 桌面电脑 | 使用现有 Xorg/显示管理器 |
-| `task-ai-desktop-vps` | VPS | Xvfb + X11VNC + ICEWM |
-| `task-ai-desktop-container` | 容器 | Xvfb + X11VNC + 可选 noVNC |
+| task-ai-desktop-core | 共享运行时 | X11/Qt/XLaunch，不绑定 DM 或 WM |
+| task-ai-desktop-kde-plasma-core | 日常 KDE Plasma | KDE Plasma Core + XLaunch 菜单，XDock 可选 |
+| task-ai-desktop | ICEWM 兼容 profile | 在 core 上加入 ICEWM + XDock |
+| task-ai-desktop-vps | VPS | Xvfb + X11VNC + ICEWM |
+| task-ai-desktop-container | 容器 | Xvfb + X11VNC + 可选 noVNC |
 
-容器 profile 不依赖 systemd；VPS profile 使用纯 CPU 的 Xvfb，不需要物理
-显示器或 GPU；桌面电脑可以在现有登录管理器中选择 ICEWM。
+task-ai-desktop-core 不绑定显示管理器或窗口管理器，可复用于 KDE、VPS 和
+容器。Debian + ai-desktop ISO 默认使用 LightDM + GTK Greeter，并支持 SDDM
+作为可选显示管理器，默认会话仍为 ICEWM。task-ai-desktop-kde-plasma-core
+面向日常 KDE Plasma 使用，使用 XLaunch 作为 AI 应用菜单；XDock 仅在需要
+底部 Dock 时单独安装。容器 profile 不依赖 systemd；VPS profile 使用纯 CPU
+的 Xvfb，不需要物理显示器或 GPU。
 
 无头会话链路为 `Xvfb → ICEWM → X11VNC → noVNC`。当前统一入口是
 `/usr/lib/task-ai-desktop/start-headless-session.sh`，设置
@@ -50,9 +56,9 @@ XDock 默认使用低功耗静态模式：关闭鱼眼放大、悬停缩放和�
 ## ISO 默认显示管理器
 
 Debian + ai-desktop ISO 默认安装并启用 LightDM 和 GTK Greeter，登录会话
-选择 ICEWM。基础 task-ai-desktop 包不强制安装显示管理器，以便 VPS 和
-容器 profile 保持无头；ISO profile 会额外加入 LightDM、Xorg 和 ICEWM 会话
-配置。SDDM 保留为需要 Qt/Wayland 登录界面的可选方案。
+选择 ICEWM；构建参数可以选择 SDDM。ISO 只保留一个 profile，不再拆分
+独立的 task-ai-desktop-sddm 包。可选的 KDE Plasma Core 可以作为日常桌面
+会话安装，XLaunch 通过 KDE autostart 提供统一应用菜单。
 
 ## Home-Ubuntu
 

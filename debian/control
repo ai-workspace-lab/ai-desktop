@@ -7,10 +7,9 @@ Standards-Version: 4.7.0
 Rules-Requires-Root: no
 Homepage: https://github.com/ai-workspace-lab/ai-desktop
 
-Package: task-ai-desktop
+Package: task-ai-desktop-core
 Architecture: all
 Depends:
- icewm,
  dbus-x11,
  xdg-utils,
  xdg-user-dirs,
@@ -37,30 +36,56 @@ Depends:
  libqt6widgets6,
  qt6-qpa-plugins,
  libxcb1,
- xdock,
  xlaunch,
  chromium | firefox-esr,
  ${misc:Depends}
 Recommends: xorg
-Description: lightweight AI Workspace X11 desktop task
- Meta-package for an ICEWM-based AI desktop with XDock, XLaunch, a terminal,
- Thunar, and Chromium or Firefox. It supports desktop, VPS, and container
- profiles through the companion task-ai-desktop-vps and
- task-ai-desktop-container packages.
+Description: core runtime for the AI Workspace desktop
+ Common fonts, X11 utilities, Qt runtime, XLaunch, terminal, file manager,
+ browser, GVFS, and shared session scripts. This package does not select a
+ display manager or window manager.
+
+Package: task-ai-desktop-kde-plasma-core
+Architecture: all
+Depends:
+ task-ai-desktop-core,
+ kde-plasma-desktop,
+ plasma-workspace,
+ kwin-x11,
+ kde-cli-tools,
+ ${misc:Depends}
+Recommends: dolphin, konsole
+Suggests: xdock, lightdm, sddm
+Description: KDE Plasma core profile for the AI Workspace desktop
+ Daily-use KDE Plasma desktop core using XLaunch as the AI application menu.
+ XDock remains optional and can be installed when a bottom dock is desired.
+ The display manager is selected by the desktop or ISO profile.
+
+Package: task-ai-desktop
+Architecture: all
+Depends:
+ task-ai-desktop-core,
+ icewm,
+ xdock,
+ ${misc:Depends}
+Recommends: xorg
+Description: ICEWM compatibility profile for task-ai-desktop
+ Compatibility meta-package for the original ICEWM desktop profile. It adds
+ ICEWM and XDock on top of task-ai-desktop-core.
 
 Package: task-ai-desktop-vps
 Architecture: all
-Depends: task-ai-desktop, xvfb, x11vnc, dbus-x11, ${misc:Depends}
-Recommends: novnc, websockify
+Depends: task-ai-desktop-core, icewm, xvfb, x11vnc, dbus-x11, ${misc:Depends}
+Recommends: novnc, websockify, xdock
 Description: VPS profile for task-ai-desktop
- Adds the Xvfb and X11VNC pieces needed to run the ICEWM AI desktop on a
- headless VPS without a physical display or GPU.
+ Adds Xvfb and X11VNC for a headless ICEWM AI desktop without a display
+ manager, physical display, or GPU.
 
 Package: task-ai-desktop-container
 Architecture: all
-Depends: task-ai-desktop, xvfb, x11vnc, dbus-x11, tini, ${misc:Depends}
-Recommends: novnc, websockify
+Depends: task-ai-desktop-core, icewm, xvfb, x11vnc, dbus-x11, tini, ${misc:Depends}
+Recommends: novnc, websockify, xdock
 Description: container profile for task-ai-desktop
- Adds Xvfb, X11VNC, D-Bus and init setup for running the AI desktop inside an
- OCI container without systemd; noVNC and websockify provide optional browser
+ Adds Xvfb, X11VNC, D-Bus, and init setup for an OCI container without
+ systemd or a display manager. noVNC and websockify provide optional browser
  access.
